@@ -11,3 +11,7 @@ resetFiles:
 clean: resetFiles
 	rm -f *.class
 	rm -f backEnd/*.class
+
+start:
+	make all
+	java ShoppingCart

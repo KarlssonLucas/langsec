@@ -18,6 +18,11 @@ public class Wallet {
 	this.file = new RandomAccessFile(new File("backEnd/wallet.txt"), "rw");
     }
 
+    public boolean safeWithdraw(int valueToWithdraw) throws Exception {
+        return false;
+    }
+
+
     /**
      * Gets the wallet balance. 
      *
