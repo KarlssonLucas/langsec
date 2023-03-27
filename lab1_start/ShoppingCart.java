@@ -22,6 +22,15 @@ public class ShoppingCart {
         String product = scan(scanner);
 
         while(!product.equals("quit")) {
+            int prodCost = Store.getProductPrice(product);
+            int bal = wallet.getBalance(); 
+
+            if(prodCost > bal) break; 
+            int newBal = bal - prodCost; 
+
+            wallet.setBalance(newBal);
+            pocket.addProduct(product); 
+            
             /* TODO:
                - check if the amount of credits is enough, if not stop the execution.
                - otherwise, withdraw the price of the product from the wallet.
