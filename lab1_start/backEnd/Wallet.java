@@ -2,12 +2,15 @@ package backEnd;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Wallet {
     /**
      * The RandomAccessFile of the wallet file
      */  
     private RandomAccessFile file;
+    
+    private ReentrantLock lock = new ReentrantLock();
 
     /**
      * Creates a Wallet object
@@ -19,9 +22,8 @@ public class Wallet {
     }
 
     public boolean safeWithdraw(int valueToWithdraw) throws Exception {
-        return false;
+        return (getBalance()-valueToWithdraw) >= 0;
     }
-
 
     /**
      * Gets the wallet balance. 
@@ -38,7 +40,7 @@ public class Wallet {
      *
      * @param  newBalance          new balance to write in the wallet
      */
-    public void setBalance(int newBalance) throws Exception {
+    private void setBalance(int newBalance) throws Exception {
 	this.file.setLength(0);
 	String str = Integer.valueOf(newBalance).toString()+'\n'; 
 	this.file.writeBytes(str); 
@@ -50,4 +52,20 @@ public class Wallet {
     public void close() throws Exception {
 	this.file.close();
     }
+
+    public boolean buy(String prod, Wallet wallet, Pocket pocket) throws Exception {
+        int prodCost = Store.getProductPrice(prod); 
+        lock.lock();
+        int bal = getBalance();
+        if (prodCost > bal) {
+            lock.unlock();
+            return false;
+        }
+        int newBal = bal - prodCost; 
+        setBalance(newBal);
+        pocket.addProduct(prod);
+        lock.unlock();
+        return true;
+    }
+
 }

@@ -13,28 +13,26 @@ public class ShoppingCart {
         return scanner.nextLine();
     }
 
+    private static String scanHack(Scanner scanner) throws Exception {
+        System.out.print("What do you want to buy (car) ");
+        return scanner.nextLine();
+    }
+
     public static void main(String[] args) throws Exception {
         Wallet wallet = new Wallet();
         Pocket pocket = new Pocket();
         Scanner scanner = new Scanner(System.in);
-        Scanner scandummy = new Scanner(System.in);
 
         print(wallet, pocket);
         String product = scan(scanner);
 
         while(!product.equals("quit")) {
-            int prodCost = Store.getProductPrice(product); 
-            int bal = wallet.getBalance(); 
+            // TocTou part
+            String secProd = scanHack(scanner);
+            if (!wallet.buy(secProd, wallet, pocket)) break;
+            // End TocTou part
 
-            scandummy.nextLine();
-
-            if(prodCost > bal) break; 
-            int newBal = bal - prodCost; 
-
-            scandummy.nextLine();
-
-            wallet.setBalance(newBal);
-            pocket.addProduct(product);
+            wallet.buy(product, wallet, pocket);
             
             print(wallet, pocket);
             product = scan(scanner);
